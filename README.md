@@ -109,6 +109,23 @@ docker login docker.infra.cloveri.com
 ```
 docker-compose up -d
 ```
+### Узнать ID контейнера
+```
+docker ps
+```
+### Войти в контейнер
+```
+docker exec -t -i <container_id> bash
+```
+### Сделать миграции
+```
+python manage.py migrate
+```
+### Выйти из контейнера
+```
+exit
+```
+
 # 5. Разворачивание сервиса configs_service (зависит от сервиса configs_registry)
 
 ### Создать папку для сервиса (название может быть любым) и далее работать только в ней
@@ -236,3 +253,4 @@ docker login docker.infra.cloveri.com
 ```
 docker-compose up -d
 ```
+# 7. Настройка веб-сервера Nginx
