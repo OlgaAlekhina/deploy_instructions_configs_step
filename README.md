@@ -109,3 +109,25 @@ docker login docker.infra.cloveri.com
 ```
 docker-compose up -d
 ```
+# 5. Разворачивание сервиса configs_service (зависит от сервиса configs_registry)
+
+### Создать папку для сервиса (название может быть любым)
+```
+mkdir configs_service
+```
+### В папке configs_service создать файл .env с переменными окружения
+```
+touch configs_service/.env
+```
+| Переменная          | Пример значения  | Описание                              |
+| ------------------- | -----------------| ------------------------------------- |
+| SECRET_KEY          | some_key         | Секретный ключ Django - случайно сгенерированная строка                      |
+| DEBUG               | True             | True или пустая строка (= False) |
+| ALLOWED_HOSTS       | 127.0.0.1,cfg.step.skroy.ru        | Список allowed hosts (через запятую без пробела)          |
+| REGISTRY_URL        | http://127.0.0.1          | URL, на котором работает configs_registry                         |
+| REGISTRY_PORT       | 8002             | порт, на котором работает configs_registry                         |
+| ACCESS_TOKEN_PUBLIC_KEY         | public_key    | Публичный ключ для расшифровки JWT-токенов, полученных в Центре пользователей                    |
+| JWT_ALGORITHM             | RS256        | Алгоритм шифрования JWT-токенов в Центре пользователей               |
+
+ACCESS_TOKEN_PUBLIC_KEY=-----BEGIN PUBLIC KEY-----\nMIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAwwP2xW8sTF63kyi75Esy\nJd5+ENBZifoOwFz5JTjXRP0yg/feRIR1F3EJ3NMQy7uXXuTCL09wAKBcqxjilXhS\nXLNpBFOZV2ESs3vqAwLL/xN25QWQMUzvCWwVcU3CKrIgDTtcYeyj0xnGjpO9cB8W\nBdtkloxOAXjZaqQ8WLLHtkp2bc34kp4vivFwR8o21v2oeVsINH0eb5Ci8jCDKs6U\nh4Yml6EsRAlKVMJYOsgWm3J9TkbKCvpgl5XcTYCyVdQMRlcmFyF2mG90nyo0tv13\n6oxqGPP7GKozYWIQ1wAprhWPYf13m8/Agvw5bLJknybUO77rVaVM+hq4ASXNMY+j\nyhFfO/OYPZOkfLdmu1UhbIXwy1cHWbk9F6MWPF7fgU/mNVgUlibmUh+zEqdjB/Hx\nCfQPnKFEmmsQhZiLMfcEOY15OTnm9UoM8K0xZQpCM4Hj6v/LVeQnyddeudIgAa0H\nEBH0AqEynXBiJUPDMlp17rJLQsWh03fmTq8W+t41sVk8N1MXJ8dndix7JrRYI9Zx\nMR6aNehyXLCxZfw7Hpr8J5AeMNEBMogkQo83hE0DNURcr/l09pYDu4kxhuzSc1DV\nLKFYpt7G4ZxVDjYY6v8045y5UBdge4KovZjagSmOK/rraWTRyNtPSqqrH0YIlSWi\nCn5sN6gYwyFEYl3uUiTBJScCAwEAAQ==\n-----END PUBLIC KEY-----
+
