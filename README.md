@@ -197,7 +197,7 @@ touch .env
 
 ACCESS_TOKEN_PUBLIC_KEY=-----BEGIN PUBLIC KEY-----\nMIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAwwP2xW8sTF63kyi75Esy\nJd5+ENBZifoOwFz5JTjXRP0yg/feRIR1F3EJ3NMQy7uXXuTCL09wAKBcqxjilXhS\nXLNpBFOZV2ESs3vqAwLL/xN25QWQMUzvCWwVcU3CKrIgDTtcYeyj0xnGjpO9cB8W\nBdtkloxOAXjZaqQ8WLLHtkp2bc34kp4vivFwR8o21v2oeVsINH0eb5Ci8jCDKs6U\nh4Yml6EsRAlKVMJYOsgWm3J9TkbKCvpgl5XcTYCyVdQMRlcmFyF2mG90nyo0tv13\n6oxqGPP7GKozYWIQ1wAprhWPYf13m8/Agvw5bLJknybUO77rVaVM+hq4ASXNMY+j\nyhFfO/OYPZOkfLdmu1UhbIXwy1cHWbk9F6MWPF7fgU/mNVgUlibmUh+zEqdjB/Hx\nCfQPnKFEmmsQhZiLMfcEOY15OTnm9UoM8K0xZQpCM4Hj6v/LVeQnyddeudIgAa0H\nEBH0AqEynXBiJUPDMlp17rJLQsWh03fmTq8W+t41sVk8N1MXJ8dndix7JrRYI9Zx\nMR6aNehyXLCxZfw7Hpr8J5AeMNEBMogkQo83hE0DNURcr/l09pYDu4kxhuzSc1DV\nLKFYpt7G4ZxVDjYY6v8045y5UBdge4KovZjagSmOK/rraWTRyNtPSqqrH0YIlSWi\nCn5sN6gYwyFEYl3uUiTBJScCAwEAAQ==\n-----END PUBLIC KEY-----
 
-### В папке step_backend создать файл docker-compose.yml с конфигурациями докера (можно поменять порты, на которых работает сервис)
+### В папке step_backend создать файл docker-compose.yml с конфигурациями докера (в файле можно поменять порты, на которых работает сервис)
 ```
 touch docker-compose.yml
 ```
@@ -214,4 +214,25 @@ services:
       - ./.env
     volumes:
       - ./entrypoint.sh:/entrypoint.sh
+```
+### В папке step_backend создать файл entrypoint.sh для запуска Gunicorn в контейнере (в файле можно поменять порт, на котором будет работать сервис)
+```
+touch entrypoint.sh
+```
+```
+#!/bin/bash
+
+gunicorn -b 0.0.0.0:8080 --workers 2 step.wsgi
+```
+### Изменить права на файл entrypoint.sh
+```
+chmod +x entrypoint.sh
+```
+### Войти в Gitlab Registry со своими учетными данными
+```
+docker login docker.infra.cloveri.com
+```
+### Запустить контейнер 
+```
+docker-compose up -d
 ```
