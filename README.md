@@ -80,7 +80,7 @@ version: '3.8'
 
 services:
   api:
-    image:  docker.infra.cloveri.com/cloveri.start/step/configs_registry
+    image:  docker.infra.cloveri.com/cloveri.start/step/configs_registry/reg_prod:latest
     restart: unless-stopped
     network_mode: "host"
     env_file:
@@ -155,7 +155,7 @@ version: '3.8'
 
 services:
   api:
-    image:  docker.infra.cloveri.com/cloveri.start/step/configs_service
+    image:  docker.infra.cloveri.com/cloveri.start/step/configs_service/cfs_prod:latest
     restart: unless-stopped
     network_mode: "host"
     env_file:
@@ -219,7 +219,7 @@ version: '3.8'
 
 services:
   api:
-    image:  docker.infra.cloveri.com/cloveri.start/step/step_latest
+    image:  docker.infra.cloveri.com/cloveri.start/step/step_latest/step_prod:latest
     restart: unless-stopped
     ports:
       - 8080:8080
@@ -264,10 +264,51 @@ location / {
 ```
 Где proxy_pass - локальный адрес, на котором запущен сервис.
 
-На тестовом сервере использовали следующие настройки:
+На тестовом сервере использовались следующие настройки:
 
 Для configs_service
 
+```
+server {
+        listen 8000;
+
+        server_name .cfg.step.skroy.ru;
+
+        access_log /home/devops/logs/nginx_access.log;
+        error_log /home/devops/logs/nginx_error.log;
+
+        location / {
+            proxy_pass http://127.0.0.1:8001;
+            proxy_set_header Host $host;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+            proxy_redirect off;
+        }
+
+}
+```
+
 Для step
+
+```
+server {
+        listen 8000;
+
+        server_name .step.skroy.ru;
+
+        access_log /home/devops/logs/nginx_access.log;
+        error_log /home/devops/logs/nginx_error.log;
+
+        location / {
+            proxy_pass http://127.0.0.1:8080;
+            proxy_set_header Host $host;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+            proxy_redirect off;
+        }
+}
+```
+Запросы к configs_registry осуществлялись только по localhost без участия Nginx.
+
 
 
