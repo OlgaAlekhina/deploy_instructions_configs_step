@@ -42,7 +42,7 @@ sudo -u postgres psql
 ```
 CREATE USER <username> WITH PASSWORD <password>;
 ```
-### Дать пользвателю права на создание баз данных
+### Дать пользователю права на создание баз данных
 ```
 ALTER USER <username> CREATEDB;
 ```
@@ -50,7 +50,7 @@ ALTER USER <username> CREATEDB;
 ```
 CREATE DATABASE configs;
 ```
-# 4. Разворачивание сервиса configs_registry (зависит от базы данных configs)
+# 4. Деплой сервиса configs_registry (зависит от базы данных configs)
 
 ### Создать папку для сервиса (название может быть любым) и далее работать только в ней
 ```
@@ -101,7 +101,7 @@ gunicorn -b 0.0.0.0:8002 --workers 2 step.wsgi
 ```
 chmod +x entrypoint.sh
 ```
-### Войти в Gitlab Registry со своими учетными данными
+### Войти в Gitlab Container Registry со своими учетными данными
 ```
 docker login docker.infra.cloveri.com
 ```
@@ -126,7 +126,7 @@ python manage.py migrate
 exit
 ```
 
-# 5. Разворачивание сервиса configs_service (зависит от сервиса configs_registry)
+# 5. Деплой сервиса configs_service (зависит от сервиса configs_registry)
 
 ### Создать папку для сервиса (название может быть любым) и далее работать только в ней
 ```
@@ -176,7 +176,7 @@ gunicorn -b 0.0.0.0:8001 --workers 2 step.wsgi
 ```
 chmod +x entrypoint.sh
 ```
-### Войти в Gitlab Registry со своими учетными данными
+### Войти в Gitlab Container Registry со своими учетными данными
 ```
 docker login docker.infra.cloveri.com
 ```
@@ -185,7 +185,7 @@ docker login docker.infra.cloveri.com
 docker-compose up -d
 ```
 
-# 6. Разворачивание сервиса step (зависит от сервиса configs_service)
+# 6. Деплой сервиса step (зависит от сервиса configs_service)
 
 ### Создать папку для сервиса (название может быть любым) и далее работать только в ней
 ```
@@ -195,20 +195,20 @@ mkdir step_backend
 ```
 touch .env
 ```
-| Переменная          | Пример значения  | Описание                              |
-| ------------------- | -----------------| ------------------------------------- |
-| SECRET_KEY          | some_key         | Секретный ключ Django - случайно сгенерированная строка                      |
-| DEBUG               | 1                | Значение "1" соответсвует True, "0" или пустая строка - False |
-| DJANGO_ALLOWED_HOSTS       | api.step.skroy.ru 127.0.0.1 step.skroy.ru        | Список allowed hosts (через пробел)          |
-| DJANGO_CORS_ALLOWED_ORIGINS             | http://127.0.0.1 https://step.skroy.ru          | Список allowed origins (через пробел)                         |
-| BASE_URL             | https://api.beta.raida-dev.ru     | URL для запросов в API Raida                         |
-| USER_RAIDA         | raida@raida.com    | Имя пользователя для запросов в API Raida                     |
-| PASSWD_RAIDA             | raida        | Пароль пользователя для запросов в API Raida               |
-| ACCESS_TOKEN_PUBLIC_KEY         | public_key    | Публичный ключ для расшифровки JWT-токенов, полученных в Центре пользователей                    |
-| JWT_ALGORITHM             | RS256        | Алгоритм шифрования JWT-токенов в Центре пользователей   |
-| CONFIGS_SERVICE_URL             | https://cfg.step.skroy.ru/        | URL, на котором работает configs_service               |
-| LANGUAGE_CODE         | ru    | Основной язык сервиса                    |
-| TIME_ZONE             | Europe/Moscow        | Временная зона сервиса   |
+| Переменная          | Пример значения  | Описание                                                                      |
+| ------------------- | -----------------|-------------------------------------------------------------------------------|
+| SECRET_KEY          | some_key         | Секретный ключ Django - случайно сгенерированная строка                       |
+| DEBUG               | 1                | Значение "1" соответсвует True, "0" или пустая строка - False                 |
+| DJANGO_ALLOWED_HOSTS       | api.step.skroy.ru 127.0.0.1 step.skroy.ru        | Список allowed hosts (через пробел)                                           |
+| DJANGO_CORS_ALLOWED_ORIGINS             | http://127.0.0.1 https://step.skroy.ru          | Список allowed origins (через пробел)                                         |
+| BASE_URL             | https://api.beta.raida-dev.ru     | URL для запросов в API Raida                                                  |
+| USER_RAIDA         | raida@raida.com    | Имя пользователя для запросов в API Raida                                     |
+| PASSWD_RAIDA             | raida        | Пароль пользователя для запросов в API Raida                                  |
+| ACCESS_TOKEN_PUBLIC_KEY         | public_key    | Публичный ключ для расшифровки JWT-токенов, полученных в Центре пользователей |
+| JWT_ALGORITHM             | RS256        | Алгоритм шифрования JWT-токенов в Центре пользователей                        |
+| CONFIGS_SERVICE_URL             | https://cfg.step.skroy.ru/        | URL, на котором работает configs_service                                      |
+| LANGUAGE_CODE         | ru    | Основной язык сервиса                                                         |
+| TIME_ZONE             | Europe/Moscow        | Часовой пояс сервиса                                                          |
 
 ### В папке step_backend создать файл docker-compose.yml с конфигурациями докера (в файле можно поменять порты, на которых работает сервис)
 ```
@@ -241,7 +241,7 @@ gunicorn -b 0.0.0.0:8080 --workers 2 step.wsgi
 ```
 chmod +x entrypoint.sh
 ```
-### Войти в Gitlab Registry со своими учетными данными
+### Войти в Gitlab Container Registry со своими учетными данными
 ```
 docker login docker.infra.cloveri.com
 ```
@@ -251,7 +251,7 @@ docker-compose up -d
 ```
 # 7. Настройка веб-сервера Nginx
 
-Для каждого сервиса, доступного извне по доменному имени, настраивается Nginx в качестве обратного прокси. Для этого в директиву server надо вставить блок:
+Для каждого сервиса, доступного извне по доменному имени, настраивается Nginx в качестве обратного прокси. Для этого в блок server надо вставить:
 
 ```
 location / {
@@ -264,7 +264,7 @@ location / {
 ```
 Где proxy_pass - локальный адрес, на котором запущен сервис.
 
-На тестовом сервере использовались следующие настройки:
+На тестовом сервере использовались следующие основные настройки:
 
 Для configs_service
 
@@ -273,9 +273,6 @@ server {
         listen 8000;
 
         server_name .cfg.step.skroy.ru;
-
-        access_log /home/devops/logs/nginx_access.log;
-        error_log /home/devops/logs/nginx_error.log;
 
         location / {
             proxy_pass http://127.0.0.1:8001;
@@ -295,9 +292,6 @@ server {
         listen 8000;
 
         server_name .step.skroy.ru;
-
-        access_log /home/devops/logs/nginx_access.log;
-        error_log /home/devops/logs/nginx_error.log;
 
         location / {
             proxy_pass http://127.0.0.1:8080;
