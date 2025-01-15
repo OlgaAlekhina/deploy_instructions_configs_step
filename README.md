@@ -1,4 +1,8 @@
-# 1. Установка системного ПО
+# 1. Архитектура проекта
+
+нарисовать схему
+
+# 2. Установка системного ПО
 
 ### Установить Nginx
 ```
@@ -28,10 +32,6 @@ sudo apt  install docker-compose
 sudo apt install postgresql postgresql-contrib
 ```
 
-# 2. Архитектура проекта
-
-нарисовать схему
-
 # 3. Создание базы данных для хранения конфигов
 
 ### Открыть оболочку Postgres
@@ -40,7 +40,7 @@ sudo -u postgres psql
 ```
 ### Создать пользователя для Postgres
 ```
-CREATE USER <username> WITH PASSWORD <password>;
+CREATE USER <username> WITH PASSWORD '<password>';
 ```
 ### Дать пользователю права на создание баз данных
 ```
@@ -48,7 +48,7 @@ ALTER USER <username> CREATEDB;
 ```
 ### Создать базу данных
 ```
-CREATE DATABASE configs;
+CREATE DATABASE configs OWNER <username>;
 ```
 # 4. Деплой сервиса configs_registry (зависит от базы данных configs)
 
@@ -95,7 +95,7 @@ touch entrypoint.sh
 ```
 #!/bin/bash
 
-gunicorn -b 0.0.0.0:8002 --workers 2 step.wsgi
+gunicorn -b 0.0.0.0:8002 --workers 2 registry_factory.wsgi
 ```
 ### Изменить права на файл entrypoint.sh
 ```
@@ -163,6 +163,9 @@ services:
     volumes:
       - ./entrypoint.sh:/entrypoint.sh
 ```
+Примечание: 
+network_mode: "host" нужен, если взаимодействие с configs_registry происходит через localhost, если по доменному имени - лучше поменять на порты
+
 ### В папке configs_service создать файл entrypoint.sh для запуска Gunicorn в контейнере (в файле можно поменять порт, на котором будет работать сервис)
 ```
 touch entrypoint.sh
@@ -170,7 +173,7 @@ touch entrypoint.sh
 ```
 #!/bin/bash
 
-gunicorn -b 0.0.0.0:8001 --workers 2 step.wsgi
+gunicorn -b 0.0.0.0:8001 --workers 2 configs_service.wsgi
 ```
 ### Изменить права на файл entrypoint.sh
 ```
@@ -228,6 +231,9 @@ services:
     volumes:
       - ./entrypoint.sh:/entrypoint.sh
 ```
+Примечание: 
+Если взаимодействие с configs_service происходит через localhost, порты надо убрать и вместо них вставить network_mode: "host"
+
 ### В папке step_backend создать файл entrypoint.sh для запуска Gunicorn в контейнере (в файле можно поменять порт, на котором будет работать сервис)
 ```
 touch entrypoint.sh
