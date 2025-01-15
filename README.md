@@ -312,7 +312,7 @@ server {
 
 # 8. Добавление конфигов в реестр
 
-Работа всех методов в апи step зависит от наличия в реестре нужных конфигов в правильном формате. В случае использования тестового API Raida набор конфигов должен быть следующим:
+Работа всех методов в апи step зависит от наличия в реестре необходимого набора конфигов в правильном формате. В случае использования тестового API Raida набор конфигов должен быть следующим:
 ```
 "task_status_id": {
       "new": "e9672f87-586d-41b1-b9b5-79acfaf6f9c2",
@@ -344,3 +344,87 @@ server {
 
 {"detail":{"code":"SERVICE_ERROR","message":"Неправильный формат конфигураций для проекта"}}
 
+Конфиги добавляются через метод POST /configs/ сервиса configs_service после авторизации с помощью JWT-токена, полученного в ЦП.
+
+Запросы для добавления конфигов для тестовой Райды (нужно поменять URL и JWT-токен):
+
+```
+curl -X 'POST' \
+  'http://127.0.0.1:8001/configs/' \
+  -H 'Content-Type: application/json' \
+  -H 'Project-ID: e3eb60a2-3bb7-4983-8e2f-47490b979eb9' \
+  -H 'Authorization: Bearer <valid_jwt_token>' \
+  -d '{
+  "project_id": "e3eb60a2-3bb7-4983-8e2f-47490b979eb9",
+  "object_type": "node_id",
+  "data": {
+    "value": "4fc9986b-d03b-4801-a672-a191c941e17c"
+  }
+}'
+```
+```
+curl -X 'POST' \
+  'http://127.0.0.1:8001/configs/' \
+  -H 'Content-Type: application/json' \
+  -H 'Project-ID: e3eb60a2-3bb7-4983-8e2f-47490b979eb9' \
+  -H 'Authorization: Bearer <valid_jwt_token>' \
+  -d '{
+  "project_id": "e3eb60a2-3bb7-4983-8e2f-47490b979eb9",
+  "object_type": "task_status_id",
+  "data": {
+	  "new": "e9672f87-586d-41b1-b9b5-79acfaf6f9c2",
+      "approved": "84d69c46-af76-44f3-acfd-213afc3ab1cf",
+      "completed": "b9d7d6d4-e22e-4aa1-bf2d-35cdfcb94a2d",
+      "rejection": "678228a5-cade-451e-bd76-33df0e0875e9"
+  }
+}'
+```
+```
+curl -X 'POST' \
+  'http://127.0.0.1:8001/configs/' \
+  -H 'Content-Type: application/json' \
+  -H 'Project-ID: e3eb60a2-3bb7-4983-8e2f-47490b979eb9' \
+  -H 'Authorization: Bearer <valid_jwt_token>' \
+  -d '{
+  "project_id": "e3eb60a2-3bb7-4983-8e2f-47490b979eb9",
+  "object_type": "contest_status_id",
+  "data": {
+	  "new": "fe5c453a-0249-4b22-980e-c66a76ad78a9",
+      "done": "6c419c06-06fd-43c3-85ee-2f58110db712",
+      "voting": "a1b783c5-2dad-4338-98a8-0a6dfdb74f02",
+      "no_winner": "2267301e-6b6b-4f67-9e8d-65d2c6c9c05e",
+      "rejection": "678228a5-cade-451e-bd76-33df0e0875e9",
+      "sum_results": "ab7d8f83-386e-4613-a062-99162356e7ad",
+      "acceptance_works": "090e4125-f716-4427-a0a2-3e8e4655ae4d",
+      "acceptance_works_done": "0db1196c-c03f-4d5b-a422-f15a94f7dba4"
+  }
+}'
+```
+```
+curl -X 'POST' \
+  'http://127.0.0.1:8001/configs/' \
+  -H 'Content-Type: application/json' \
+  -H 'Project-ID: e3eb60a2-3bb7-4983-8e2f-47490b979eb9' \
+  -H 'Authorization: Bearer <valid_jwt_token>' \
+  -d '{
+  "project_id": "e3eb60a2-3bb7-4983-8e2f-47490b979eb9",
+  "object_type": "task_process_id",
+  "data": {
+	  "value": "eb63f559-62b1-4666-94a4-2ecdc928bdef"
+  }
+}'
+```
+```
+curl -X 'POST' \
+  'http://127.0.0.1:8001/configs/' \
+  -H 'Content-Type: application/json' \
+  -H 'Project-ID: e3eb60a2-3bb7-4983-8e2f-47490b979eb9' \
+  -H 'Authorization: Bearer <valid_jwt_token>' \
+  -d '{
+  "project_id": "e3eb60a2-3bb7-4983-8e2f-47490b979eb9",
+  "object_type": "contest_process_id",
+  "data": {
+	  "value": "9e57ac56-9ce8-43fe-a725-d6eb6cb3758b"
+  }
+}'
+```
